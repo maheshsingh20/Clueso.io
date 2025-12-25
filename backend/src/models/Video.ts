@@ -13,7 +13,7 @@ import {
 } from '@clueso/shared';
 
 export interface VideoDocument extends Omit<IVideo, '_id' | 'project' | 'owner'>, Document {
-  project: Types.ObjectId;
+  project?: Types.ObjectId;
   owner: Types.ObjectId;
 }
 
@@ -96,14 +96,12 @@ const videoSchema = new Schema<VideoDocument>({
   project: {
     type: Schema.Types.ObjectId,
     ref: 'Project',
-    required: true,
-    index: true
+    required: false
   },
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-    index: true
+    required: true
   },
   status: {
     type: String,

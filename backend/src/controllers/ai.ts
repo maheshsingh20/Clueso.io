@@ -10,7 +10,13 @@ export class AIController {
       const { text, context } = req.body
       const userId = req.user!._id
 
+      console.log('🤖 AI Controller - enhanceScript called');
+      console.log('👤 User ID:', userId);
+      console.log('📝 Text length:', text?.length);
+      console.log('🎯 Context:', context);
+
       if (!text || typeof text !== 'string') {
+        console.log('❌ Invalid text input');
         return res.status(400).json({
           success: false,
           message: 'Text is required'
@@ -20,12 +26,15 @@ export class AIController {
       logger.info(`Enhancing script for user: ${userId}`)
 
       const result = await geminiService.enhanceScript(text, context)
+      
+      console.log('✅ Enhancement result:', result);
 
       res.json({
         success: true,
         data: result
       })
     } catch (error) {
+      console.error('❌ AI Controller error:', error);
       logger.error('Script enhancement error:', error)
       next(error)
     }
@@ -134,6 +143,154 @@ export class AIController {
       })
     } catch (error) {
       logger.error('Summary generation error:', error)
+      next(error)
+    }
+  }
+
+  async askAI(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { question, context } = req.body
+      const userId = req.user!._id
+
+      if (!question || typeof question !== 'string') {
+        return res.status(400).json({
+          success: false,
+          message: 'Question is required'
+        })
+      }
+
+      logger.info(`AI Assistant query from user: ${userId}`)
+
+      const answer = await geminiService.askAI(question, context)
+
+      res.json({
+        success: true,
+        data: { 
+          question,
+          answer,
+          timestamp: new Date().toISOString()
+        }
+      })
+    } catch (error) {
+      logger.error('AI Assistant error:', error)
+      next(error)
+    }
+  }
+
+  async extractScript(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { videoId } = req.params
+      const userId = req.user!._id
+
+      // Get video and check permissions
+      const video = await Video.findById(videoId).populate('transcript')
+      
+      if (!video) {
+        return res.status(404).json({
+          success: false,
+          message: 'Video not found'
+        })
+      }
+
+      // Check access permissions (same as other video methods)
+      let hasAccess = false
+      const project = video.project as any
+
+      if (video.owner.toString() === userId.toString()) {
+        hasAccess = true
+      } else if (project && project.owner.toString() === userId.toString()) {
+        hasAccess = true
+      } else if (project && project.collaborators.some((c: any) => c.user.toString() === userId.toString())) {
+        hasAccess = true
+      } else if (project && project.visibility === 'public') {
+        hasAccess = true
+      }
+
+      if (!hasAccess) {
+        return res.status(403).json({
+          success: false,
+          message: 'Access denied'
+        })
+      }
+
+      logger.info(`Extracting script for video: ${videoId}`)
+
+      // Check if transcript already exists
+      if (video.transcript) {
+        return res.json({
+          success: true,
+          data: {
+            originalText: video.transcript.originalText || video.transcript.enhancedText || '',
+            confidence: video.transcript.confidence || 0.9,
+            language: video.transcript.language || 'en'
+          }
+        })
+      }
+
+      // Simulate script extraction from video
+      const mockScript = `Welcome to this comprehensive screen recording tutorial. In this video, I'll guide you through the effective use of our application, highlighting key features and best practices. Let's start by exploring the main dashboard where you can access all the primary functions. First, we'll look at the navigation menu and understand how to organize your projects efficiently.`
+
+      // In a real implementation, you would:
+      // 1. Extract audio from video
+      // 2. Use speech-to-text API (like Google Speech-to-Text)
+      // 3. Process the transcript with Gemini for enhancement
+
+      res.json({
+        success: true,
+        data: {
+          originalText: mockScript,
+          confidence: 0.92,
+          language: 'en'
+        }
+      })
+    } catch (error) {
+      logger.error('Script extraction error:', error)
+      next(error)
+    }
+  }
+
+  async generateCaptions(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { text } = req.body
+      const userId = req.user!._id
+
+      if (!text || typeof text !== 'string') {
+        return res.status(400).json({
+          success: false,
+          message: 'Text is required'
+        })
+      }
+
+      logger.info(`Generating captions for user: ${userId}`)
+
+      // Split text into segments (simulate timing)
+      const words = text.split(' ')
+      const segments = []
+      let currentTime = 0
+      const wordsPerSegment = 8 // ~8 words per caption segment
+      
+      for (let i = 0; i < words.length; i += wordsPerSegment) {
+        const segmentWords = words.slice(i, i + wordsPerSegment)
+        const segmentText = segmentWords.join(' ')
+        const duration = segmentWords.length * 0.5 // ~0.5 seconds per word
+        
+        segments.push({
+          id: `caption_${i / wordsPerSegment}`,
+          text: segmentText,
+          start: currentTime,
+          end: currentTime + duration,
+          confidence: 0.95 - Math.random() * 0.1 // Random confidence between 0.85-0.95
+        })
+        
+        currentTime += duration
+      }
+
+      res.json({
+        success: true,
+        data: { segments }
+      })
+    } catch (error) {
+      logger.error('Caption generation error:', error)
       next(error)
     }
   }

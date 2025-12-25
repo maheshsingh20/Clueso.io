@@ -107,11 +107,11 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 relative my-8">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 relative my-8">
         {/* Header */}
-        <div className="sticky top-0 bg-white rounded-t-3xl flex items-center justify-between p-6 border-b border-gray-100 relative z-10">
+        <div className="sticky top-0 bg-white rounded-t-lg flex items-center justify-between p-6 border-b border-gray-100 relative z-10">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-sky-500 via-pink-400 to-sky-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-gradient-to-br from-sky-500 via-pink-400 to-sky-600 rounded-md flex items-center justify-center shadow-lg">
               <FolderPlus className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -121,7 +121,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
           </div>
           <button
             onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600 p-2 rounded-xl hover:bg-gray-100 transition-colors"
+            className="text-gray-400 hover:text-gray-600 p-2 rounded-md hover:bg-gray-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -131,7 +131,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
         <form onSubmit={handleSubmit} className="p-6 space-y-6 relative z-10">
           {/* General Error */}
           {errors.general && (
-            <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl">
+            <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-md">
               <p className="text-sm font-medium">{errors.general}</p>
             </div>
           )}
@@ -146,7 +146,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
               placeholder="Enter an amazing project name..."
-              className={`w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-400 transition-all ${
+              className={`w-full px-4 py-3 border-2 border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-400 transition-all ${
                 errors.name ? 'border-red-300 bg-red-50' : ''
               }`}
               maxLength={100}
@@ -169,7 +169,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
               onChange={(e) => handleInputChange('description', e.target.value)}
               placeholder="Describe your project goals and vision..."
               rows={3}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-400 transition-all resize-none"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-400 transition-all resize-none"
               maxLength={500}
             />
             <p className="mt-1 text-xs text-gray-500">
@@ -185,7 +185,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
             <select
               value={formData.workspaceId}
               onChange={(e) => handleInputChange('workspaceId', e.target.value)}
-              className={`w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-400 transition-all ${
+              className={`w-full px-4 py-3 border-2 border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-400 transition-all ${
                 errors.workspaceId ? 'border-red-300 bg-red-50' : ''
               }`}
               disabled={workspacesLoading}
@@ -208,7 +208,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
               Project Visibility
             </label>
             <div className="space-y-3">
-              <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-xl border-2 border-gray-200 hover:border-sky-300 hover:bg-sky-50/50 transition-all duration-200">
+              <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-md border-2 border-gray-200 hover:border-sky-300 hover:bg-sky-50/50 transition-all duration-200">
                 <input
                   type="radio"
                   name="visibility"
@@ -218,7 +218,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
                   className="mt-1 text-sky-600 focus:ring-sky-500"
                 />
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-md flex items-center justify-center">
                     <Lock className="w-4 h-4 text-white" />
                   </div>
                   <div>
@@ -228,7 +228,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
                 </div>
               </label>
 
-              <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-xl border-2 border-gray-200 hover:border-purple-300 hover:bg-purple-50/50 transition-all duration-200">
+              <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-md border-2 border-gray-200 hover:border-purple-300 hover:bg-purple-50/50 transition-all duration-200">
                 <input
                   type="radio"
                   name="visibility"
@@ -238,7 +238,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
                   className="mt-1 text-purple-600 focus:ring-purple-500"
                 />
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-md flex items-center justify-center">
                     <Users className="w-4 h-4 text-white" />
                   </div>
                   <div>
@@ -248,7 +248,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
                 </div>
               </label>
 
-              <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-xl border-2 border-gray-200 hover:border-green-300 hover:bg-green-50/50 transition-all duration-200">
+              <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-md border-2 border-gray-200 hover:border-green-300 hover:bg-green-50/50 transition-all duration-200">
                 <input
                   type="radio"
                   name="visibility"
@@ -258,7 +258,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
                   className="mt-1 text-green-600 focus:ring-green-500"
                 />
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-md flex items-center justify-center">
                     <Globe className="w-4 h-4 text-white" />
                   </div>
                   <div>
@@ -271,11 +271,11 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
           </div>
 
           {/* Actions */}
-          <div className="sticky bottom-0 bg-white rounded-b-3xl flex space-x-3 pt-4 border-t border-gray-100">
+          <div className="sticky bottom-0 bg-white rounded-b-lg flex space-x-3 pt-4 border-t border-gray-100">
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 px-4 py-3 border-2 border-gray-200 bg-white text-gray-700 rounded-xl font-semibold hover:border-gray-300 hover:bg-gray-50 transition-all"
+              className="flex-1 px-4 py-3 border-2 border-gray-200 bg-white text-gray-700 rounded-md font-semibold hover:border-gray-300 hover:bg-gray-50 transition-all"
               disabled={createProjectMutation.isLoading}
             >
               Cancel
@@ -283,7 +283,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProjectModalPr
             <button
               type="submit"
               disabled={createProjectMutation.isLoading || !formData.name.trim() || !formData.workspaceId}
-              className="flex-1 px-4 py-3 bg-gradient-to-r from-sky-500 via-pink-400 to-sky-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="flex-1 px-4 py-3 bg-gradient-to-r from-sky-500 via-pink-400 to-sky-600 text-white rounded-md font-semibold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {createProjectMutation.isLoading ? (
                 <div className="flex items-center justify-center space-x-2">

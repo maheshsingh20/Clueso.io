@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "AI-powered screen recording platform",
   "scripts": {
+    "setup": "node -e \"console.log('Run setup.bat on Windows or setup.sh on Linux/Mac')\"",
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "cd frontend && npm run dev",

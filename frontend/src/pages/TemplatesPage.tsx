@@ -13,7 +13,6 @@ import {
   Smartphone,
   Square,
   Crown,
-  TrendingUp,
   Award,
   Grid3X3,
   List,
@@ -92,13 +91,13 @@ const TemplatesPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
         {/* Header */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-gray-200/50 p-8 mb-8 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-gray-200/50 p-8 mb-8 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
           <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="p-2 bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl">
+              <div className="p-2 bg-gradient-to-br from-pink-100 to-rose-100 rounded-md">
                 <Award className="w-6 h-6 text-pink-600" />
               </div>
-              <span className="text-sm font-bold uppercase tracking-wider text-pink-700 bg-pink-50/60 px-3 py-1 rounded-full">Video Templates</span>
+              <span className="text-sm font-bold uppercase tracking-wider text-pink-700 bg-pink-50/60 px-3 py-1 rounded-md">Video Templates</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-black mb-4 text-gray-900 leading-tight">
               Professional <span className="bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">Templates</span>
@@ -107,11 +106,11 @@ const TemplatesPage = () => {
               Choose from our collection of professionally designed templates to create stunning videos in minutes.
             </p>
             <div className="flex items-center space-x-6 text-sm text-gray-700">
-              <div className="flex items-center space-x-2 bg-white/60 px-3 py-1 rounded-full">
+              <div className="flex items-center space-x-2 bg-white/60 px-3 py-1 rounded-md">
                 <Award className="w-4 h-4 text-pink-600" />
                 <span>{templatesData?.pagination.total || 0} Templates</span>
               </div>
-              <div className="flex items-center space-x-2 bg-white/60 px-3 py-1 rounded-full">
+              <div className="flex items-center space-x-2 bg-white/60 px-3 py-1 rounded-md">
                 <Crown className="w-4 h-4 text-amber-600" />
                 <span>Premium Quality</span>
               </div>
@@ -121,19 +120,6 @@ const TemplatesPage = () => {
           {/* Background decorations */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-pink-200/20 to-rose-200/20 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-rose-200/20 to-pink-200/20 rounded-full blur-2xl translate-y-24 -translate-x-24"></div>
-        </div>
-                <Crown className="w-4 h-4 text-amber-600" />
-                <span>Premium & Free</span>
-              </div>
-              <div className="flex items-center space-x-2 bg-white/60 px-3 py-1 rounded-full">
-                <TrendingUp className="w-4 h-4 text-emerald-600" />
-                <span>Updated Weekly</span>
-              </div>
-            </div>
-          </div>
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-red-200/30 to-pink-200/30 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-pink-200/30 to-red-200/30 rounded-full blur-2xl translate-y-24 -translate-x-24"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
         </div>
 
         {/* Featured Templates */}
@@ -161,7 +147,7 @@ const TemplatesPage = () => {
         )}
 
         {/* Search and Filters */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 p-6 mb-8 shadow-xl hover:shadow-2xl transition-all duration-300">
+        <div className="bg-white/80 backdrop-blur-sm rounded-md border border-gray-200/50 p-6 mb-8 shadow-xl hover:shadow-2xl transition-all duration-300">
           <div className="flex flex-col lg:flex-row gap-4 mb-4">
             <div className="flex-1">
               <div className="relative">
@@ -169,7 +155,7 @@ const TemplatesPage = () => {
                 <input
                   type="text"
                   placeholder="Search templates by name, category, or tags..."
-                  className="w-full pl-12 pr-6 py-4 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-transparent shadow-lg transition-all duration-300"
+                  className="w-full pl-12 pr-6 py-4 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-md text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-transparent shadow-lg transition-all duration-300"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -178,21 +164,21 @@ const TemplatesPage = () => {
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`inline-flex items-center px-4 py-3 border border-gray-200/50 rounded-2xl font-semibold transition-all duration-300 ${showFilters ? 'bg-red-50 border-red-200 text-red-700' : 'bg-white/80 text-gray-700 hover:bg-red-50 hover:border-red-200'}`}
+                className={`inline-flex items-center px-4 py-3 border border-gray-200/50 rounded-md font-semibold transition-all duration-300 ${showFilters ? 'bg-red-50 border-red-200 text-red-700' : 'bg-white/80 text-gray-700 hover:bg-red-50 hover:border-red-200'}`}
               >
                 <Filter className="w-4 h-4 mr-2" />
                 Filters
               </button>
-              <div className="flex items-center space-x-2 bg-gray-100/80 rounded-2xl p-1">
+              <div className="flex items-center space-x-2 bg-gray-100/80 rounded-md p-1">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-xl transition-all duration-200 ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'hover:bg-white/50'}`}
+                  className={`p-2 rounded-md transition-all duration-200 ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'hover:bg-white/50'}`}
                 >
                   <Grid3X3 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-xl transition-all duration-200 ${viewMode === 'list' ? 'bg-white shadow-sm' : 'hover:bg-white/50'}`}
+                  className={`p-2 rounded-md transition-all duration-200 ${viewMode === 'list' ? 'bg-white shadow-sm' : 'hover:bg-white/50'}`}
                 >
                   <List className="w-4 h-4" />
                 </button>
@@ -250,8 +236,8 @@ const TemplatesPage = () => {
         {isLoading ? (
           <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 p-6 shadow-lg animate-pulse">
-                <div className="h-48 bg-gray-200 rounded-xl mb-4"></div>
+              <div key={i} className="bg-white/80 backdrop-blur-sm rounded-md border border-gray-200/50 p-6 shadow-lg animate-pulse">
+                <div className="h-48 bg-gray-200 rounded-md mb-4"></div>
                 <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
                 <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
                 <div className="flex space-x-2">
@@ -275,7 +261,7 @@ const TemplatesPage = () => {
           </div>
         ) : (
           <div className="text-center py-20">
-            <div className="w-24 h-24 bg-gradient-to-br from-purple-100/90 to-pink-100/70 backdrop-blur-sm rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
+            <div className="w-24 h-24 bg-gradient-to-br from-purple-100/90 to-pink-100/70 backdrop-blur-sm rounded-lg flex items-center justify-center mx-auto mb-8 shadow-2xl">
               <Search className="w-12 h-12 text-purple-600" />
             </div>
             <h3 className="text-3xl font-bold text-gray-900 mb-4">No templates found</h3>
@@ -287,7 +273,7 @@ const TemplatesPage = () => {
 
         {/* Pagination */}
         {templatesData && templatesData.pagination.pages > 1 && (
-          <div className="mt-12 flex items-center justify-between bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 p-6 shadow-lg">
+          <div className="mt-12 flex items-center justify-between bg-white/80 backdrop-blur-sm rounded-md border border-gray-200/50 p-6 shadow-lg">
             <div className="text-sm text-gray-600">
               Showing {((templatesData.pagination.page - 1) * templatesData.pagination.limit) + 1} to{' '}
               {Math.min(templatesData.pagination.page * templatesData.pagination.limit, templatesData.pagination.total)} of{' '}
@@ -355,12 +341,12 @@ const TemplateCard = ({
 
   if (viewMode === 'list') {
     return (
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 p-6 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-6">
+      <div className="bg-white/80 backdrop-blur-sm rounded-md border border-gray-200/50 p-6 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-6">
         <div className="relative w-32 h-24 flex-shrink-0">
           <img
             src={template.thumbnail}
             alt={template.name}
-            className="w-full h-full object-cover rounded-xl"
+            className="w-full h-full object-cover rounded-md"
           />
           {template.isPremium && (
             <div className="absolute top-2 right-2">
@@ -415,9 +401,9 @@ const TemplateCard = ({
   }
 
   return (
-    <div className={`group relative overflow-hidden rounded-2xl border border-gray-200/60 bg-white/80 backdrop-blur-sm hover:shadow-2xl hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 ${featured ? 'ring-2 ring-yellow-400 ring-opacity-50' : ''}`}>
+    <div className={`group relative overflow-hidden rounded-md border border-gray-200/60 bg-white/80 backdrop-blur-sm hover:shadow-2xl hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 ${featured ? 'ring-2 ring-yellow-400 ring-opacity-50' : ''}`}>
       {featured && (
-        <div className="absolute top-3 left-3 z-10 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center space-x-1">
+        <div className="absolute top-3 left-3 z-10 bg-yellow-500 text-white px-2 py-1 rounded-md text-xs font-bold flex items-center space-x-1">
           <Star className="w-3 h-3" />
           <span>Featured</span>
         </div>
@@ -442,22 +428,22 @@ const TemplateCard = ({
         
         <div className="absolute top-3 right-3 flex items-center space-x-2">
           {template.isPremium && (
-            <div className="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center space-x-1">
+            <div className="bg-yellow-500 text-white px-2 py-1 rounded-md text-xs font-bold flex items-center space-x-1">
               <Crown className="w-3 h-3" />
               <span>Pro</span>
             </div>
           )}
-          <span className="bg-gray-900/80 text-white px-2 py-1 rounded-full text-xs">
+          <span className="bg-gray-900/80 text-white px-2 py-1 rounded-md text-xs">
             {template.category}
           </span>
         </div>
         
         <div className="absolute bottom-3 left-3 flex items-center space-x-2">
-          <div className="bg-gray-900/80 text-white px-2 py-1 rounded-full text-xs flex items-center space-x-1">
+          <div className="bg-gray-900/80 text-white px-2 py-1 rounded-md text-xs flex items-center space-x-1">
             {getAspectRatioIcon(template.aspectRatio)}
             <span>{template.aspectRatio}</span>
           </div>
-          <div className="bg-gray-900/80 text-white px-2 py-1 rounded-full text-xs flex items-center space-x-1">
+          <div className="bg-gray-900/80 text-white px-2 py-1 rounded-md text-xs flex items-center space-x-1">
             <Clock className="w-3 h-3" />
             <span>{formatDuration(template.duration)}</span>
           </div>
@@ -478,13 +464,13 @@ const TemplateCard = ({
           {template.features.slice(0, 3).map((feature, index) => (
             <span
               key={index}
-              className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
+              className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md"
             >
               {feature}
             </span>
           ))}
           {template.features.length > 3 && (
-            <span className="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded-full">
+            <span className="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded-md">
               +{template.features.length - 3} more
             </span>
           )}
@@ -530,7 +516,7 @@ const TemplatePreviewModal = ({
 }) => {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
@@ -539,7 +525,7 @@ const TemplatePreviewModal = ({
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-100"
+            className="text-gray-400 hover:text-gray-600 p-2 rounded-md hover:bg-gray-100"
           >
             <X className="w-6 h-6" />
           </button>
@@ -553,14 +539,14 @@ const TemplatePreviewModal = ({
               <img
                 src={template.thumbnail}
                 alt={template.name}
-                className="w-full rounded-xl shadow-lg"
+                className="w-full rounded-md shadow-lg"
               />
               {template.previewVideo && (
                 <div className="mt-4">
                   <video
                     src={template.previewVideo}
                     controls
-                    className="w-full rounded-xl"
+                    className="w-full rounded-md"
                   />
                 </div>
               )}
@@ -580,7 +566,7 @@ const TemplatePreviewModal = ({
                     {template.features.map((feature, index) => (
                       <span
                         key={index}
-                        className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
+                        className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-md"
                       >
                         {feature}
                       </span>

@@ -3,7 +3,7 @@ import { Video, Project } from '../models';
 import { AuthRequest } from '../middleware';
 import { s3Service, queueService } from '../services';
 import { logger } from '../utils/logger';
-import { AppError, ErrorCode, VideoStatus, ProcessingStage } from '@clueso/shared';
+import { AppError, ErrorCode, VideoStatus, ProcessingStage, ProjectVisibility } from '@clueso/shared';
 import multer from 'multer';
 import { config } from '../config';
 
@@ -25,6 +25,116 @@ const upload = multer({
 
 export class VideosController {
   uploadMiddleware = upload.single('video');
+
+  async uploadVideo(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { title, description, projectId } = req.body;
+      const file = req.file;
+
+      if (!file) {
+        throw new AppError({
+          code: ErrorCode.VALIDATION_ERROR,
+          message: 'Video file is required'
+        });
+      }
+
+      let project = null;
+      
+      // If projectId is provided, verify project exists and user has access
+      if (projectId) {
+        project = await Project.findById(projectId);
+        if (!project) {
+          throw new AppError({
+            code: ErrorCode.NOT_FOUND,
+            message: 'Project not found'
+          });
+        }
+
+        // Check if user has access to project
+        let hasAccess = false;
+        let accessReason = '';
+
+        // Check if user is the owner
+        if (project.owner.toString() === req.user!._id.toString()) {
+          hasAccess = true;
+          accessReason = 'owner';
+        }
+        // Check if user is a collaborator
+        else if (project.collaborators.some(c => c.user.toString() === req.user!._id.toString())) {
+          hasAccess = true;
+          accessReason = 'collaborator';
+        }
+        // Public projects are accessible to everyone
+        else if (project.visibility === ProjectVisibility.PUBLIC) {
+          hasAccess = true;
+          accessReason = 'public';
+        }
+
+        logger.info(`Video upload access check: project ${projectId}, user: ${req.user!._id}, hasAccess: ${hasAccess}, reason: ${accessReason}, visibility: ${project.visibility}`);
+
+        if (!hasAccess) {
+          throw new AppError({
+            code: ErrorCode.AUTHORIZATION_ERROR,
+            message: 'Access denied to this project'
+          });
+        }
+      }
+
+      // Upload video to S3
+      const videoKey = s3Service.generateKey('videos', file.originalname);
+      const uploadResult = await s3Service.uploadFile(
+        file.buffer,
+        videoKey,
+        file.mimetype,
+        {
+          originalName: file.originalname,
+          uploadedBy: req.user!._id.toString()
+        }
+      );
+
+      // Create video record
+      const video = new Video({
+        title,
+        description,
+        project: projectId || null,
+        owner: req.user!._id,
+        status: VideoStatus.UPLOADING,
+        originalFile: {
+          url: uploadResult.url,
+          key: uploadResult.key,
+          size: uploadResult.size,
+          duration: 0, // Will be updated during processing
+          format: file.mimetype.split('/')[1],
+          resolution: { width: 0, height: 0 } // Will be updated during processing
+        }
+      });
+
+      await video.save();
+
+      // Add video to project if projectId is provided
+      if (project) {
+        project.videos.push(video._id as any);
+        await project.save();
+      }
+
+      // Start video processing
+      await queueService.addVideoProcessingJob({
+        videoId: video._id.toString(),
+        userId: req.user!._id.toString(),
+        stage: ProcessingStage.EXTRACT_AUDIO
+      });
+
+      logger.info(`Video uploaded: ${video._id} by user: ${req.user!.email}${projectId ? ` to project: ${projectId}` : ' (no project)'}`);
+
+      res.status(201).json({
+        success: true,
+        data: video,
+        message: 'Video uploaded successfully and processing started'
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 
   async createVideo(req: AuthRequest, res: Response, next: NextFunction) {
     try {
@@ -48,8 +158,26 @@ export class VideosController {
       }
 
       // Check if user has access to project
-      const hasAccess = project.owner.toString() === req.user!._id.toString() ||
-        project.collaborators.some(c => c.user.toString() === req.user!._id.toString());
+      let hasAccess = false;
+      let accessReason = '';
+
+      // Check if user is the owner
+      if (project.owner.toString() === req.user!._id.toString()) {
+        hasAccess = true;
+        accessReason = 'owner';
+      }
+      // Check if user is a collaborator
+      else if (project.collaborators.some(c => c.user.toString() === req.user!._id.toString())) {
+        hasAccess = true;
+        accessReason = 'collaborator';
+      }
+      // Public projects are accessible to everyone
+      else if (project.visibility === ProjectVisibility.PUBLIC) {
+        hasAccess = true;
+        accessReason = 'public';
+      }
+
+      logger.info(`Video upload access check: project ${projectId}, user: ${req.user!._id}, hasAccess: ${hasAccess}, reason: ${accessReason}, visibility: ${project.visibility}`);
 
       if (!hasAccess) {
         throw new AppError({
@@ -177,8 +305,31 @@ export class VideosController {
 
       // Check access permissions
       const project = video.project as any;
-      const hasAccess = video.owner.toString() === userId.toString() ||
-        project.collaborators.some((c: any) => c.user.toString() === userId.toString());
+      let hasAccess = false;
+      let accessReason = '';
+
+      // Check if user is the video owner
+      if (video.owner.toString() === userId.toString()) {
+        hasAccess = true;
+        accessReason = 'video_owner';
+      }
+      // Check if user is the project owner
+      else if (project && project.owner.toString() === userId.toString()) {
+        hasAccess = true;
+        accessReason = 'project_owner';
+      }
+      // Check if user is a project collaborator
+      else if (project && project.collaborators.some((c: any) => c.user.toString() === userId.toString())) {
+        hasAccess = true;
+        accessReason = 'project_collaborator';
+      }
+      // Public projects are accessible to everyone
+      else if (project && project.visibility === ProjectVisibility.PUBLIC) {
+        hasAccess = true;
+        accessReason = 'public_project';
+      }
+
+      logger.info(`Video access check: video ${id}, user: ${userId}, hasAccess: ${hasAccess}, reason: ${accessReason}, project visibility: ${project?.visibility}`);
 
       if (!hasAccess) {
         throw new AppError({

@@ -19,8 +19,7 @@ const transcriptSchema = new Schema<TranscriptDocument>({
     type: Schema.Types.ObjectId,
     ref: 'Video',
     required: true,
-    unique: true,
-    index: true
+    unique: true
   },
   originalText: {
     type: String,
@@ -43,7 +42,7 @@ const transcriptSchema = new Schema<TranscriptDocument>({
   timestamps: true
 });
 
-// Indexes
-transcriptSchema.index({ video: 1 });
+// Indexes (video index is already created by unique: true)
+// transcriptSchema.index({ video: 1 }); // Removed duplicate index
 
 export const Transcript = mongoose.model<TranscriptDocument>('Transcript', transcriptSchema);

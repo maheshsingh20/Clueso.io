@@ -6,11 +6,15 @@ import { TranscriptSegment } from '@clueso/shared';
 // Initialize Gemini AI
 let genAI: GoogleGenerativeAI | null = null;
 
+logger.info('🔍 Debug - GEMINI_API_KEY exists: ' + (config.GEMINI_API_KEY ? 'YES' : 'NO'));
+logger.info('🔍 Debug - Key length: ' + (config.GEMINI_API_KEY?.length || 0));
+logger.info('🔍 Debug - Is placeholder: ' + (config.GEMINI_API_KEY === 'your-gemini-api-key'));
+
 if (config.GEMINI_API_KEY && config.GEMINI_API_KEY !== 'your-gemini-api-key') {
   genAI = new GoogleGenerativeAI(config.GEMINI_API_KEY);
-  logger.info('Using Google Gemini for AI processing');
+  logger.info('✅ Using Google Gemini for AI processing');
 } else {
-  logger.info('Gemini API key not configured, using mock AI responses for development');
+  logger.info('❌ Gemini API key not configured, using mock AI responses for development');
 }
 
 export interface TranscriptionResult {
@@ -95,14 +99,21 @@ export class GeminiService {
 
   async enhanceScript(originalText: string, context?: string): Promise<ScriptEnhancementResult> {
     try {
+      console.log('🔧 Gemini Service - enhanceScript called');
+      console.log('📝 Original text:', originalText.substring(0, 100) + '...');
+      console.log('🎯 Context:', context);
+      console.log('🔑 genAI initialized:', !!genAI);
+      
       logger.info('Starting script enhancement with Gemini');
       
       if (!genAI) {
+        console.log('⚠️ Gemini not configured, using mock enhancement');
         logger.info('Gemini not configured, using mock enhancement');
         return this.mockScriptEnhancement(originalText);
       }
 
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      console.log('🚀 Using real Gemini API...');
+      const model = genAI.getGenerativeModel({ model: 'models/gemini-2.5-flash' });
       
       const systemPrompt = `You are an expert technical writer and video script enhancer. Your task is to improve video transcripts for screen recordings and tutorials.
 
@@ -248,7 +259,7 @@ Please respond with valid JSON only.`;
         return this.mockDocumentation(videoTitle);
       }
 
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = genAI.getGenerativeModel({ model: 'models/gemini-2.5-flash' });
       
       const systemPrompt = `You are an expert technical documentation writer. Create step-by-step documentation from video transcripts.
 
@@ -343,7 +354,7 @@ Please respond with valid JSON only.`;
         return `Summary: ${text.substring(0, 100)}...`;
       }
 
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = genAI.getGenerativeModel({ model: 'models/gemini-2.5-flash' });
       
       const prompt = `Please provide a concise summary of the following text in 2-3 sentences:
 
@@ -360,6 +371,66 @@ ${text}`;
       logger.error('Gemini summary error:', error);
       return `Summary: ${text.substring(0, 100)}...`;
     }
+  }
+
+  async askAI(question: string, context?: string): Promise<string> {
+    try {
+      logger.info('Starting AI Assistant query with Gemini');
+      
+      if (!genAI) {
+        return this.mockAIResponse(question);
+      }
+
+      const model = genAI.getGenerativeModel({ model: 'models/gemini-2.5-flash' });
+      
+      const systemPrompt = `You are a helpful AI assistant for a video creation and screen recording platform called Clueso. You help users with:
+
+- Video editing and enhancement questions
+- Screen recording best practices
+- Project management and organization
+- Technical troubleshooting
+- Feature explanations and tutorials
+- General productivity tips
+
+Guidelines:
+- Be helpful, friendly, and concise
+- Provide actionable advice
+- If you don't know something specific about the platform, be honest
+- Focus on practical solutions
+- Use clear, simple language
+
+${context ? `\nContext about the user's current situation: ${context}` : ''}`;
+
+      const prompt = `${systemPrompt}
+
+User Question: ${question}
+
+Please provide a helpful response:`;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const answer = response.text();
+      
+      logger.info('AI Assistant query completed with Gemini');
+      return answer;
+      
+    } catch (error) {
+      logger.error('Gemini AI Assistant error:', error);
+      return this.mockAIResponse(question);
+    }
+  }
+
+  private mockAIResponse(question: string): string {
+    const responses = [
+      "I'd be happy to help! For video editing questions, you can use our AI-powered enhancement features in the video editor. Try the Script, Voiceover, or Effects tabs for automated improvements.",
+      "Great question! For screen recording, make sure to choose a quiet environment and test your audio levels first. Our platform automatically optimizes video quality during processing.",
+      "That's a common issue! Try checking your project settings and ensure all files are properly uploaded. You can also use our AI assistant for troubleshooting specific problems.",
+      "Thanks for asking! Our platform offers several ways to organize your content. Use workspaces for team collaboration and projects for grouping related videos.",
+      "I understand your concern. For technical issues, first try refreshing the page. If the problem persists, you can submit feedback through our feedback system for quick support."
+    ];
+    
+    return responses[Math.floor(Math.random() * responses.length)] + 
+           `\n\nYour question: "${question}"\n\nFor more specific help, please provide additional context about what you're trying to accomplish.`;
   }
 }
 

@@ -16,6 +16,12 @@ const createVideoSchema = Joi.object({
   projectId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/).required()
 });
 
+const uploadVideoSchema = Joi.object({
+  title: Joi.string().trim().min(1).max(200).required(),
+  description: Joi.string().trim().max(1000).allow(''),
+  projectId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/).optional()
+});
+
 const updateVideoSchema = Joi.object({
   title: Joi.string().trim().min(1).max(200),
   description: Joi.string().trim().max(1000).allow('')
@@ -37,6 +43,61 @@ const videoQuerySchema = paginationSchema.keys({
   projectId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/),
   status: Joi.string().valid('uploading', 'processing', 'ready', 'error')
 });
+
+/**
+ * @swagger
+ * /videos/upload:
+ *   post:
+ *     summary: Upload a video file (screen recording or other)
+ *     tags: [Videos]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - video
+ *               - title
+ *             properties:
+ *               video:
+ *                 type: string
+ *                 format: binary
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               projectId:
+ *                 type: string
+ *                 description: Optional project ID to associate video with
+ *     responses:
+ *       201:
+ *         description: Video uploaded successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Authentication required
+ */
+router.post('/upload', 
+  videosController.uploadMiddleware,
+  (req, res, next) => {
+    const { error } = uploadVideoSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        error: 'Validation error',
+        details: error.details.map(d => ({
+          field: d.path.join('.'),
+          message: d.message
+        }))
+      });
+    }
+    next();
+  },
+  videosController.uploadVideo
+);
 
 /**
  * @swagger

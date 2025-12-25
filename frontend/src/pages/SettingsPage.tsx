@@ -71,13 +71,13 @@ const SettingsPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
         {/* Header */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-gray-200/50 p-8 mb-8 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+        <div className="bg-white/80 backdrop-blur-sm rounded-md border border-gray-200/50 p-8 mb-8 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
           <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="p-2 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl">
+              <div className="p-2 bg-gradient-to-br from-gray-100 to-gray-200 rounded-md">
                 <Settings className="w-6 h-6 text-gray-600" />
               </div>
-              <span className="text-sm font-bold uppercase tracking-wider text-gray-700 bg-gray-50/60 px-3 py-1 rounded-full">Account Settings</span>
+              <span className="text-sm font-bold uppercase tracking-wider text-gray-700 bg-gray-50/60 px-3 py-1 rounded-md">Account Settings</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-black mb-4 text-gray-900 leading-tight">
               Account <span className="bg-gradient-to-r from-gray-600 to-gray-800 bg-clip-text text-transparent">Settings</span>
@@ -91,35 +91,17 @@ const SettingsPage = () => {
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-gray-200/20 to-gray-300/20 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-gray-300/20 to-gray-200/20 rounded-full blur-2xl translate-y-24 -translate-x-24"></div>
         </div>
-          <div className="bg-gradient-to-r from-red-50 via-pink-50 to-red-50 border border-red-100/50 rounded-3xl p-8 mb-8 text-gray-800 relative overflow-hidden shadow-lg backdrop-blur-sm">
-            <div className="relative z-10">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="p-2 bg-gradient-to-br from-red-200 to-pink-200 rounded-xl">
-                  <Settings className="w-6 h-6 text-red-700" />
-                </div>
-                <span className="text-sm font-bold uppercase tracking-wider text-red-700 bg-white/60 px-3 py-1 rounded-full">Account Settings</span>
-              </div>
-              <h1 className="text-4xl md:text-5xl font-black mb-4 text-gray-900 leading-tight">
-                Manage Your <span className="bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">Account</span>
-              </h1>
-              <p className="text-xl text-gray-700 max-w-2xl leading-relaxed">
-                Customize your account settings and preferences to get the most out of Clueso.
-              </p>
-            </div>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-red-200/30 to-pink-200/30 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-pink-200/30 to-red-200/30 rounded-full blur-2xl translate-y-24 -translate-x-24"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
-          </div>
 
+        <div>
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar */}
             <div className="lg:w-64">
-              <nav className="space-y-2 bg-white/80 backdrop-blur-sm rounded-3xl p-4 shadow-xl border border-red-200/50">
+              <nav className="space-y-2 bg-white/80 backdrop-blur-sm rounded-md p-4 shadow-xl border border-red-200/50">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`w-full flex items-center px-4 py-3 text-sm font-bold rounded-2xl transition-all duration-300 ${
+                    className={`w-full flex items-center px-4 py-3 text-sm font-bold rounded-md transition-all duration-300 ${
                       activeTab === tab.id
                         ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg'
                         : 'text-gray-600 hover:bg-red-50 hover:text-red-700'
@@ -134,7 +116,7 @@ const SettingsPage = () => {
 
             {/* Content */}
             <div className="flex-1">
-              <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-red-200/50 p-8">
+              <div className="bg-white/80 backdrop-blur-sm rounded-md shadow-xl border border-red-200/50 p-8">
                 {activeTab === 'profile' && (
                   <ProfileSettings user={user} onUpdate={handleProfileUpdate} isLoading={profileMutation.isLoading} />
                 )}
@@ -174,12 +156,12 @@ const ProfileSettings = ({ user, onUpdate, isLoading }: any) => {
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex items-center space-x-6">
-          <div className="w-20 h-20 bg-gradient-to-br from-red-100 to-pink-100 rounded-3xl flex items-center justify-center shadow-lg">
+          <div className="w-20 h-20 bg-gradient-to-br from-red-100 to-pink-100 rounded-lg flex items-center justify-center shadow-lg">
             {formData.avatar ? (
               <img
                 src={formData.avatar}
                 alt="Profile"
-                className="w-20 h-20 rounded-3xl object-cover"
+                className="w-20 h-20 rounded-lg object-cover"
               />
             ) : (
               <User className="w-8 h-8 text-red-600" />
@@ -189,7 +171,7 @@ const ProfileSettings = ({ user, onUpdate, isLoading }: any) => {
             <button 
               type="button" 
               onClick={handleAvatarUpload}
-              className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-2xl font-bold text-sm hover:shadow-lg transition-all duration-300"
+              className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-md font-bold text-sm hover:shadow-lg transition-all duration-300"
             >
               <Upload className="w-4 h-4 mr-2 inline" />
               Change Photo
@@ -207,7 +189,7 @@ const ProfileSettings = ({ user, onUpdate, isLoading }: any) => {
             </label>
             <input
               type="text"
-              className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white/80 backdrop-blur-sm transition-all duration-200"
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white/80 backdrop-blur-sm transition-all duration-200"
               value={formData.firstName}
               onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
               required
@@ -219,7 +201,7 @@ const ProfileSettings = ({ user, onUpdate, isLoading }: any) => {
             </label>
             <input
               type="text"
-              className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white/80 backdrop-blur-sm transition-all duration-200"
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white/80 backdrop-blur-sm transition-all duration-200"
               value={formData.lastName}
               onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
               required
@@ -233,7 +215,7 @@ const ProfileSettings = ({ user, onUpdate, isLoading }: any) => {
           </label>
           <input
             type="email"
-            className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white/80 backdrop-blur-sm transition-all duration-200"
+            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white/80 backdrop-blur-sm transition-all duration-200"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
@@ -244,7 +226,7 @@ const ProfileSettings = ({ user, onUpdate, isLoading }: any) => {
           <button
             type="submit"
             disabled={isLoading}
-            className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-6 py-3 rounded-2xl font-bold hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+            className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-6 py-3 rounded-md font-bold hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
           >
             <Save className="w-4 h-4 mr-2" />
             {isLoading ? 'Saving...' : 'Save Changes'}

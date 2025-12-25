@@ -13,8 +13,7 @@ const userSchema = new Schema<UserDocument>({
     required: true,
     unique: true,
     lowercase: true,
-    trim: true,
-    index: true
+    trim: true
   },
   password: {
     type: String,
@@ -54,8 +53,7 @@ const userSchema = new Schema<UserDocument>({
   }
 });
 
-// Index for efficient queries
-userSchema.index({ email: 1 });
+// Index for efficient queries (email index is already created by unique: true)
 userSchema.index({ workspaces: 1 });
 
 // Hash password before saving

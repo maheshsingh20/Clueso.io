@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { toast } from 'sonner'
+import { useState } from 'react'
 import { 
   Plus, 
   Video, 
@@ -24,9 +25,11 @@ import {
 import { useAuthStore } from '../store/authStore'
 import { projectsService } from '../services/projects'
 import { userProgressService } from '../services/userProgress'
+import ScreenRecorder from '../components/ScreenRecorder'
 
 const DashboardPage = () => {
   const { user } = useAuthStore()
+  const [isScreenRecorderOpen, setIsScreenRecorderOpen] = useState(false)
 
   // Fetch recent projects
   const { data: recentProjects } = useQuery(
@@ -71,36 +74,36 @@ const DashboardPage = () => {
           <div className="lg:col-span-2 space-y-8">
             
             {/* Create a new video */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-gray-200/50 p-6 shadow-xl hover:shadow-2xl hover:border-blue-200/60 transition-all duration-300">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="p-2 bg-gradient-to-br from-red-100 to-pink-100 rounded-xl">
+                <div className="p-2 bg-gradient-to-br from-red-100 to-pink-100 rounded-md border border-red-100/50 hover:border-red-200/60 transition-all duration-300">
                   <Plus className="w-6 h-6 text-red-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900">Create a new video</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
-                <Link
-                  to="/projects"
-                  className="group relative p-6 border border-red-100/50 rounded-2xl hover:border-red-200 hover:bg-red-50/50 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                <div
+                  onClick={() => setIsScreenRecorderOpen(true)}
+                  className="group relative p-6 border border-red-100/50 rounded-lg hover:border-cyan-200/60 hover:bg-red-50/50 transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-pink-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-pink-50/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative z-10">
-                    <div className="w-12 h-12 bg-gradient-to-br from-red-200 to-red-300 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <div className="w-12 h-12 bg-gradient-to-br from-red-200 to-red-300 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg border border-red-200/50 group-hover:border-red-300/60">
                       <Monitor className="w-6 h-6 text-red-700" />
                     </div>
                     <h3 className="font-bold text-gray-900 mb-2">Record screen</h3>
                     <p className="text-sm text-gray-600 leading-relaxed">Capture your screen with audio narration</p>
                   </div>
-                </Link>
+                </div>
 
                 <Link
                   to="/projects"
-                  className="group relative p-6 border border-pink-100/50 rounded-2xl hover:border-pink-200 hover:bg-pink-50/50 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  className="group relative p-6 border border-pink-100/50 rounded-lg hover:border-yellow-200/60 hover:bg-pink-50/50 transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-pink-50/50 to-rose-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-pink-50/50 to-rose-50/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative z-10">
-                    <div className="w-12 h-12 bg-gradient-to-br from-pink-200 to-rose-300 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <div className="w-12 h-12 bg-gradient-to-br from-pink-200 to-rose-300 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg border border-pink-200/50 group-hover:border-pink-300/60">
                       <Upload className="w-6 h-6 text-pink-700" />
                     </div>
                     <h3 className="font-bold text-gray-900 mb-2">Upload video</h3>
@@ -110,11 +113,11 @@ const DashboardPage = () => {
 
                 <Link
                   to="/projects"
-                  className="group relative p-6 border border-emerald-100/50 rounded-2xl hover:border-emerald-200 hover:bg-emerald-50/50 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  className="group relative p-6 border border-emerald-100/50 rounded-lg hover:border-purple-200/60 hover:bg-emerald-50/50 transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-green-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-green-50/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative z-10">
-                    <div className="w-12 h-12 bg-gradient-to-br from-emerald-200 to-emerald-300 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <div className="w-12 h-12 bg-gradient-to-br from-emerald-200 to-emerald-300 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg border border-emerald-200/50 group-hover:border-emerald-300/60">
                       <FileText className="w-6 h-6 text-emerald-700" />
                     </div>
                     <h3 className="font-bold text-gray-900 mb-2">Upload slides</h3>
@@ -125,23 +128,23 @@ const DashboardPage = () => {
             </div>
 
             {/* AI Tools */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-gray-200/50 p-6 shadow-xl hover:shadow-2xl hover:border-violet-200/60 transition-all duration-300">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="p-2 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl">
+                <div className="p-2 bg-gradient-to-br from-purple-100 to-pink-100 rounded-md border border-purple-100/50 hover:border-purple-200/60 transition-all duration-300">
                   <Sparkles className="w-6 h-6 text-purple-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900">AI tools</h2>
-                <span className="px-3 py-1 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 text-xs font-bold rounded-full">POWERED BY GEMINI</span>
+                <span className="px-3 py-1 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 text-xs font-bold rounded-md border border-purple-100/50 hover:border-purple-200/60 transition-all duration-300">POWERED BY GEMINI</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
                 <div 
                   onClick={() => toast.info('AI Cuts feature coming soon!')}
-                  className="group relative p-6 border border-purple-100/50 rounded-2xl hover:border-purple-200 hover:bg-purple-50/50 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-lg"
+                  className="group relative p-6 border border-purple-100/50 rounded-lg hover:border-indigo-200/60 hover:bg-purple-50/50 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-lg"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-pink-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-pink-50/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative z-10">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-200 to-pink-200 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-200 to-pink-200 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg border border-purple-200/50 group-hover:border-purple-300/60">
                       <Scissors className="w-6 h-6 text-purple-700" />
                     </div>
                     <h3 className="font-bold text-gray-900 mb-2">Cuts</h3>
@@ -151,11 +154,11 @@ const DashboardPage = () => {
 
                 <div 
                   onClick={() => toast.info('Auto-update feature coming soon!')}
-                  className="group relative p-6 border border-red-100/50 rounded-2xl hover:border-red-200 hover:bg-red-50/50 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-lg"
+                  className="group relative p-6 border border-red-100/50 rounded-lg hover:border-teal-200/60 hover:bg-red-50/50 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-lg"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-pink-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-pink-50/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative z-10">
-                    <div className="w-12 h-12 bg-gradient-to-br from-red-200 to-red-300 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <div className="w-12 h-12 bg-gradient-to-br from-red-200 to-red-300 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg border border-red-200/50 group-hover:border-red-300/60">
                       <RefreshCw className="w-6 h-6 text-red-700" />
                     </div>
                     <h3 className="font-bold text-gray-900 mb-2">Auto-update</h3>
@@ -165,11 +168,11 @@ const DashboardPage = () => {
 
                 <div 
                   onClick={() => toast.info('Translator feature coming soon!')}
-                  className="group relative p-6 border border-orange-100/50 rounded-2xl hover:border-orange-200 hover:bg-orange-50/50 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-lg"
+                  className="group relative p-6 border border-orange-100/50 rounded-lg hover:border-lime-200/60 hover:bg-orange-50/50 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-lg"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 to-red-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 to-red-50/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative z-10">
-                    <div className="w-12 h-12 bg-gradient-to-br from-orange-200 to-red-200 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <div className="w-12 h-12 bg-gradient-to-br from-orange-200 to-red-200 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg border border-orange-200/50 group-hover:border-orange-300/60">
                       <Languages className="w-6 h-6 text-orange-700" />
                     </div>
                     <h3 className="font-bold text-gray-900 mb-2">Translator</h3>
@@ -448,6 +451,17 @@ const DashboardPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Screen Recorder Modal */}
+      <ScreenRecorder
+        isOpen={isScreenRecorderOpen}
+        onClose={() => setIsScreenRecorderOpen(false)}
+        onSuccess={(videoId) => {
+          toast.success('Screen recording saved successfully!')
+          // Optionally navigate to the video or project
+          console.log('Screen recording saved with ID:', videoId)
+        }}
+      />
     </div>
   )
 }

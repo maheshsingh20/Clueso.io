@@ -5,3 +5,4 @@ export { Video, VideoDocument } from './Video';
 export { Transcript, TranscriptDocument } from './Transcript';
 export { Document, DocumentDocument } from './Document';
 export { Template, TemplateDocument } from './Template';
+export { Feedback, IFeedback } from './Feedback';

@@ -53,8 +53,8 @@ const UserProgressSchema = new Schema<IUserProgress>({
   timestamps: true
 })
 
-// Indexes for better performance
-UserProgressSchema.index({ userId: 1 })
+// Indexes for better performance (userId index is already created by unique: true)
+// UserProgressSchema.index({ userId: 1 }) // Removed duplicate index
 UserProgressSchema.index({ lastActiveDate: -1 })
 
 export const UserProgress = mongoose.model<IUserProgress>('UserProgress', UserProgressSchema)

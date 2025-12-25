@@ -44,14 +44,12 @@ const projectSchema = new Schema<ProjectDocument>({
   workspace: {
     type: Schema.Types.ObjectId,
     ref: 'Workspace',
-    required: true,
-    index: true
+    required: true
   },
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-    index: true
+    required: true
   },
   visibility: {
     type: String,

@@ -1,7 +1,6 @@
 import { useQuery } from 'react-query'
 import { Link } from 'react-router-dom'
 import { 
-  TrendingUp,
   Video,
   FolderOpen,
   Clock,
@@ -9,14 +8,9 @@ import {
   Activity,
   BarChart3,
   PieChart,
-  Users,
-  Play,
   ArrowUp,
   ArrowDown,
-  Calendar,
-  FileVideo,
-  Zap,
-  Sparkles
+  Calendar
 } from 'lucide-react'
 import { analyticsService } from '../services/analytics'
 

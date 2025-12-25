@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Toaster } from 'sonner'
+import { ScreenRecordingProvider } from './contexts/ScreenRecordingContext'
+import ScreenRecordingIndicator from './components/ScreenRecordingIndicator'
 import App from './App.tsx'
 import './index.css'
 
@@ -25,12 +27,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           v7_relativeSplatPath: true
         }}
       >
-        <App />
-        <Toaster 
-          position="top-right"
-          richColors
-          closeButton
-        />
+        <ScreenRecordingProvider>
+          <App />
+          <ScreenRecordingIndicator />
+          <Toaster 
+            position="top-right"
+            richColors
+            closeButton
+          />
+        </ScreenRecordingProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>,

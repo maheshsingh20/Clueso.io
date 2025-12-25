@@ -149,17 +149,17 @@ const ProjectDetailPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
         {/* Header */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-gray-200/50 p-8 mb-8 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-gray-200/50 p-8 mb-8 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
           <div className="relative z-10">
             <div className="flex items-center space-x-4 mb-4">
               <Link
                 to="/projects"
-                className="p-2 bg-white/60 hover:bg-white/80 rounded-xl transition-all duration-300 hover:scale-110"
+                className="p-2 bg-white/60 hover:bg-white/80 rounded-md transition-all duration-300 hover:scale-110"
               >
                 <ArrowLeft className="w-5 h-5 text-gray-600" />
               </Link>
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-gradient-to-br from-red-100 to-pink-100 rounded-xl">
+                <div className="p-2 bg-gradient-to-br from-red-100 to-pink-100 rounded-md">
                   <FolderOpen className="w-6 h-6 text-red-600" />
                 </div>
                 <span className="text-sm font-bold uppercase tracking-wider text-red-700 bg-red-50/60 px-3 py-1 rounded-full">Project Details</span>
@@ -192,12 +192,12 @@ const ProjectDetailPage = () => {
               <div className="flex items-center space-x-3">
                 <button
                   onClick={() => setShowUploadModal(true)}
-                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 >
                   <Upload className="w-4 h-4 mr-2" />
                   Upload Video
                 </button>
-                <button className="inline-flex items-center px-6 py-3 bg-white/80 backdrop-blur-sm border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 hover:scale-105">
+                <button className="inline-flex items-center px-6 py-3 bg-white/80 backdrop-blur-sm border border-gray-200 text-gray-700 font-semibold rounded-md hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 hover:scale-105">
                   <Settings className="w-4 h-4 mr-2" />
                   Settings
                 </button>
@@ -210,12 +210,13 @@ const ProjectDetailPage = () => {
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-pink-200/20 to-red-200/20 rounded-full blur-2xl translate-y-24 -translate-x-24"></div>
         </div>
 
-          {/* Videos Grid */}
+        {/* Videos Grid */}
+        <div>
           {videosLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-white/80 backdrop-blur-sm rounded-3xl border border-red-200/50 shadow-lg animate-pulse p-6">
-                  <div className="h-32 bg-red-100 rounded-2xl mb-4"></div>
+                <div key={i} className="bg-white/80 backdrop-blur-sm rounded-lg border border-red-200/50 shadow-lg animate-pulse p-6">
+                  <div className="h-32 bg-red-100 rounded-md mb-4"></div>
                   <div className="h-4 bg-red-100 rounded w-3/4 mb-2"></div>
                   <div className="h-3 bg-red-100 rounded w-1/2"></div>
                 </div>
@@ -224,10 +225,10 @@ const ProjectDetailPage = () => {
           ) : videos?.data?.length ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {videos?.data?.map((video) => (
-                <div key={video._id} className="bg-white/80 backdrop-blur-sm rounded-3xl border border-red-200/50 shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+                <div key={video._id} className="bg-white/80 backdrop-blur-sm rounded-lg border border-red-200/50 shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 overflow-hidden">
                   <div className="p-6">
                     {/* Video Thumbnail */}
-                    <div className="aspect-video bg-gradient-to-br from-red-100 to-pink-100 rounded-2xl mb-4 flex items-center justify-center relative group overflow-hidden">
+                    <div className="aspect-video bg-gradient-to-br from-red-100 to-pink-100 rounded-md mb-4 flex items-center justify-center relative group overflow-hidden">
                       {video.status === 'ready' ? (
                         <Link
                           to={`/videos/${video._id}/edit`}
@@ -248,7 +249,7 @@ const ProjectDetailPage = () => {
                         <img
                           src={video.metadata.keyframes[0].thumbnail}
                           alt={video.title}
-                          className="w-full h-full object-cover rounded-2xl"
+                          className="w-full h-full object-cover rounded-md"
                         />
                       )}
                     </div>
@@ -279,7 +280,7 @@ const ProjectDetailPage = () => {
 
                     {/* Progress Bar for Processing Videos */}
                     {video.status === 'processing' && video.processing && (
-                      <div className="p-4 bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl border border-red-200/50">
+                      <div className="p-4 bg-gradient-to-r from-red-50 to-pink-50 rounded-md border border-red-200/50">
                         <div className="flex items-center justify-between text-xs text-red-700 mb-2">
                           <span className="flex items-center space-x-1 font-bold">
                             <span>🤖</span>
@@ -302,13 +303,13 @@ const ProjectDetailPage = () => {
                     {/* AI Features Badge for Ready Videos */}
                     {video.status === 'ready' && (
                       <div className="flex flex-wrap gap-2">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-red-100 text-red-800 font-bold">
+                        <span className="inline-flex items-center px-3 py-1 rounded-md text-xs bg-red-100 text-red-800 font-bold">
                           🎙️ AI Voice
                         </span>
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-pink-100 text-pink-800 font-bold">
+                        <span className="inline-flex items-center px-3 py-1 rounded-md text-xs bg-pink-100 text-pink-800 font-bold">
                           📝 Captions
                         </span>
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-purple-100 text-purple-800 font-bold">
+                        <span className="inline-flex items-center px-3 py-1 rounded-md text-xs bg-purple-100 text-purple-800 font-bold">
                           🔍 Smart Zoom
                         </span>
                       </div>
@@ -319,7 +320,7 @@ const ProjectDetailPage = () => {
             </div>
           ) : (
             <div className="text-center py-20">
-              <div className="w-24 h-24 bg-gradient-to-br from-red-100/90 to-red-200/70 backdrop-blur-sm rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
+              <div className="w-24 h-24 bg-gradient-to-br from-red-100/90 to-red-200/70 backdrop-blur-sm rounded-lg flex items-center justify-center mx-auto mb-8 shadow-2xl">
                 <Video className="w-12 h-12 text-red-600" />
               </div>
               <h3 className="text-3xl font-black text-gray-900 mb-4">No videos yet</h3>
@@ -329,7 +330,7 @@ const ProjectDetailPage = () => {
               <div className="mt-6">
                 <button
                   onClick={() => setShowUploadModal(true)}
-                  className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-6 py-3 rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300 inline-flex items-center"
+                  className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-6 py-3 rounded-md font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300 inline-flex items-center"
                 >
                   <Upload className="w-4 h-4 mr-2" />
                   Upload Video
@@ -341,8 +342,8 @@ const ProjectDetailPage = () => {
           {/* Upload Modal */}
           {showUploadModal && (
             <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-              <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-lg">
+              <div className="relative bg-white rounded-md shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-md">
                   <div className="flex items-center justify-between">
                     <h3 className="text-lg font-medium text-gray-900">
                       Upload Video

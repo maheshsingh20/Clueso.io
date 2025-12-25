@@ -8,6 +8,7 @@ import aiRoutes from './ai';
 import templateRoutes from './templates';
 import analyticsRoutes from './analytics';
 import userProgressRoutes from './userProgress';
+import feedbackRoutes from './feedback';
 
 const router = Router();
 
@@ -31,5 +32,6 @@ router.use('/ai', aiRoutes);
 router.use('/templates', templateRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/user-progress', userProgressRoutes);
+router.use('/feedback', feedbackRoutes);
 
 export default router;

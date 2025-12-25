@@ -46,6 +46,7 @@ class AIService {
     try {
       console.log('🤖 Calling Gemini AI to enhance script...');
       console.log('📝 Text length:', text.length, 'characters');
+      console.log('🌐 API URL:', '/ai/enhance-script');
       
       const response = await apiService.post<ApiResponse<ScriptEnhancementResult>>(
         '/ai/enhance-script',
@@ -56,6 +57,8 @@ class AIService {
       return response.data!
     } catch (error: any) {
       console.error('❌ Script enhancement failed:', error);
+      console.error('❌ Error response:', error.response?.data);
+      console.error('❌ Error status:', error.response?.status);
       
       // Provide more detailed error information
       if (error.response?.status === 400) {
@@ -120,6 +123,100 @@ class AIService {
     } catch (error) {
       console.error('AI generate summary error:', error);
       throw error;
+    }
+  }
+
+  async askAI(question: string, context?: string): Promise<{ question: string; answer: string; timestamp: string }> {
+    try {
+      console.log('🤖 Asking AI:', question);
+      if (context) console.log('📋 Context:', context);
+      
+      const response = await apiService.post<ApiResponse<{ question: string; answer: string; timestamp: string }>>(
+        '/ai/ask',
+        { question, context }
+      )
+      
+      console.log('✅ AI response received:', response.data);
+      return response.data!
+    } catch (error: any) {
+      console.error('❌ AI Assistant error:', error);
+      
+      if (error.response?.status === 400) {
+        throw new Error('Invalid question: ' + (error.response.data?.message || 'Please provide a valid question'));
+      } else if (error.response?.status === 401) {
+        throw new Error('Please log in to use AI Assistant');
+      } else {
+        throw new Error('AI Assistant is temporarily unavailable. Please try again.');
+      }
+    }
+  }
+
+  async extractScript(videoId: string): Promise<{
+    originalText: string
+    confidence: number
+    language: string
+  }> {
+    try {
+      console.log('🎬 Extracting script from video:', videoId);
+      
+      const response = await apiService.post<ApiResponse<{
+        originalText: string
+        confidence: number
+        language: string
+      }>>(
+        `/ai/videos/${videoId}/extract-script`
+      )
+      
+      console.log('✅ Script extraction successful:', response.data);
+      return response.data!
+    } catch (error: any) {
+      console.error('❌ Script extraction failed:', error);
+      
+      if (error.response?.status === 404) {
+        throw new Error('Video not found');
+      } else if (error.response?.status === 403) {
+        throw new Error('You do not have permission to access this video');
+      } else {
+        throw new Error('Script extraction failed. Please try again.');
+      }
+    }
+  }
+
+  async generateCaptions(text: string): Promise<{
+    segments: Array<{
+      id: string
+      text: string
+      start: number
+      end: number
+      confidence: number
+    }>
+  }> {
+    try {
+      console.log('📝 Generating captions for text...');
+      
+      const response = await apiService.post<ApiResponse<{
+        segments: Array<{
+          id: string
+          text: string
+          start: number
+          end: number
+          confidence: number
+        }>
+      }>>(
+        '/ai/generate-captions',
+        { text }
+      )
+      
+      console.log('✅ Caption generation successful:', response.data);
+      return response.data!
+    } catch (error: any) {
+      console.error('❌ Caption generation failed:', error);
+      
+      if (error.response?.status === 400) {
+        throw new Error('Invalid text input for caption generation');
+      } else {
+        throw new Error('Caption generation failed. Please try again.');
+      }
     }
   }
 

@@ -58,13 +58,13 @@ const WorkspacesPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
         {/* Header */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-gray-200/50 p-8 mb-8 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+        <div className="bg-white/80 backdrop-blur-sm rounded-md border border-gray-200/50 p-8 mb-8 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
           <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="p-2 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl">
+              <div className="p-2 bg-gradient-to-br from-purple-100 to-pink-100 rounded-md">
                 <Users className="w-6 h-6 text-purple-600" />
               </div>
-              <span className="text-sm font-bold uppercase tracking-wider text-purple-700 bg-purple-50/60 px-3 py-1 rounded-full">Team Workspaces</span>
+              <span className="text-sm font-bold uppercase tracking-wider text-purple-700 bg-purple-50/60 px-3 py-1 rounded-md">Team Workspaces</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-black mb-4 text-gray-900 leading-tight">
               Team <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Workspaces</span>
@@ -74,7 +74,7 @@ const WorkspacesPage = () => {
             </p>
             <button 
               onClick={() => setShowCreateModal(true)}
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
             >
               <Plus className="w-5 h-5 mr-2" />
               <span>New Workspace</span>
@@ -87,7 +87,7 @@ const WorkspacesPage = () => {
         </div>
 
         {/* Search */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 p-6 mb-8 shadow-xl hover:shadow-2xl transition-all duration-300">
+        <div className="bg-white/80 backdrop-blur-sm rounded-md border border-gray-200/50 p-6 mb-8 shadow-xl hover:shadow-2xl transition-all duration-300">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -95,19 +95,13 @@ const WorkspacesPage = () => {
               placeholder="Search workspaces..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-400 transition-all duration-300"
+              className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-400 transition-all duration-300"
             />
           </div>
         </div>
-                placeholder="Search workspaces..."
-                className="input pl-12 w-full"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
 
-          {/* Workspaces Grid */}
+        {/* Workspaces Grid */}
+        <div>
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[...Array(6)].map((_, i) => (
@@ -128,7 +122,7 @@ const WorkspacesPage = () => {
               {workspaces?.data?.map((workspace: any) => (
                 <div 
                   key={workspace._id} 
-                  className="group relative bg-white rounded-2xl border-2 border-gray-100 hover:border-purple-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
+                  className="group relative bg-white rounded-md border-2 border-gray-100 hover:border-purple-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
                 >
                   {/* Gradient Background Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 via-pink-50/30 to-cyan-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -140,7 +134,7 @@ const WorkspacesPage = () => {
                       <div className="flex items-start space-x-4 flex-1 min-w-0">
                         {/* Workspace Icon */}
                         <div className="relative flex-shrink-0">
-                          <div className="w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                          <div className="w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-500 to-purple-600 rounded-md flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                             <Users className="w-8 h-8 text-white" />
                           </div>
                           {/* Status Indicator */}
@@ -170,7 +164,7 @@ const WorkspacesPage = () => {
                       
                       {/* Actions Menu */}
                       <div className="flex-shrink-0 ml-4">
-                        <button className="text-gray-400 hover:text-gray-600 p-2 rounded-xl hover:bg-gray-100 transition-all duration-200 opacity-0 group-hover:opacity-100">
+                        <button className="text-gray-400 hover:text-gray-600 p-2 rounded-md hover:bg-gray-100 transition-all duration-200 opacity-0 group-hover:opacity-100">
                           <MoreVertical className="w-5 h-5" />
                         </button>
                       </div>
@@ -188,9 +182,9 @@ const WorkspacesPage = () => {
                     {/* Stats Section */}
                     <div className="mb-6">
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200/50">
+                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-md p-4 border border-purple-200/50">
                           <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center shadow-sm">
+                            <div className="w-10 h-10 bg-purple-500 rounded-md flex items-center justify-center shadow-sm">
                               <FolderOpen className="w-5 h-5 text-white" />
                             </div>
                             <div>
@@ -200,9 +194,9 @@ const WorkspacesPage = () => {
                           </div>
                         </div>
                         
-                        <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl p-4 border border-pink-200/50">
+                        <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-md p-4 border border-pink-200/50">
                           <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center shadow-sm">
+                            <div className="w-10 h-10 bg-pink-500 rounded-md flex items-center justify-center shadow-sm">
                               <Users className="w-5 h-5 text-white" />
                             </div>
                             <div>
@@ -223,7 +217,7 @@ const WorkspacesPage = () => {
                       
                       <div className="flex items-center space-x-2">
                         <button 
-                          className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100"
+                          className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-md transition-all duration-200 opacity-0 group-hover:opacity-100"
                           title="Invite Members"
                           onClick={(e) => {
                             e.stopPropagation()
@@ -233,7 +227,7 @@ const WorkspacesPage = () => {
                           <UserPlus className="w-4 h-4" />
                         </button>
                         <button 
-                          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100"
+                          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-all duration-200 opacity-0 group-hover:opacity-100"
                           title="Workspace Settings"
                           onClick={(e) => {
                             e.stopPropagation()
@@ -247,14 +241,14 @@ const WorkspacesPage = () => {
                   </div>
                   
                   {/* Hover Effect Border */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
+                  <div className="absolute inset-0 rounded-md bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
                 </div>
               ))}
             </div>
           ) : (
             <div className="text-center py-20">
               <div className="relative mb-8">
-                <div className="w-32 h-32 bg-gradient-to-br from-purple-100 via-pink-100 to-cyan-100 rounded-3xl flex items-center justify-center mx-auto shadow-xl">
+                <div className="w-32 h-32 bg-gradient-to-br from-purple-100 via-pink-100 to-cyan-100 rounded-lg flex items-center justify-center mx-auto shadow-xl">
                   <Users className="w-16 h-16 text-purple-600" />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
@@ -304,7 +298,7 @@ const WorkspacesPage = () => {
           {/* Create Workspace Modal */}
           {showCreateModal && (
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-              <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+              <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
                 <form onSubmit={handleCreateWorkspace} className="relative">
                   {/* Header */}
                   <div className="relative bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 p-8 text-white">
@@ -312,7 +306,7 @@ const WorkspacesPage = () => {
                     <div className="relative z-10">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
-                          <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+                          <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-md flex items-center justify-center shadow-lg">
                             <Users className="w-8 h-8 text-white" />
                           </div>
                           <div>
@@ -323,7 +317,7 @@ const WorkspacesPage = () => {
                         <button
                           type="button"
                           onClick={() => setShowCreateModal(false)}
-                          className="text-white/80 hover:text-white p-2 rounded-xl hover:bg-white/10 transition-all duration-200"
+                          className="text-white/80 hover:text-white p-2 rounded-md hover:bg-white/10 transition-all duration-200"
                         >
                           <X className="w-6 h-6" />
                         </button>
@@ -340,7 +334,7 @@ const WorkspacesPage = () => {
                       <div className="relative">
                         <input
                           type="text"
-                          className="w-full px-4 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-400 transition-all text-lg"
+                          className="w-full px-4 py-4 border-2 border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-400 transition-all text-lg"
                           placeholder="Enter an amazing workspace name..."
                           value={newWorkspace.name}
                           onChange={(e) => setNewWorkspace({ ...newWorkspace, name: e.target.value })}
@@ -359,7 +353,7 @@ const WorkspacesPage = () => {
                       </label>
                       <div className="relative">
                         <textarea
-                          className="w-full px-4 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-400 transition-all resize-none"
+                          className="w-full px-4 py-4 border-2 border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-400 transition-all resize-none"
                           rows={4}
                           placeholder="Describe your workspace purpose and goals..."
                           value={newWorkspace.description}
@@ -373,7 +367,7 @@ const WorkspacesPage = () => {
                     </div>
 
                     {/* Features Preview */}
-                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200/50">
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-md p-6 border border-purple-200/50">
                       <h4 className="font-bold text-gray-800 mb-4 flex items-center">
                         <Sparkles className="w-5 h-5 mr-2 text-purple-600" />
                         What you'll get with your workspace
@@ -404,7 +398,7 @@ const WorkspacesPage = () => {
                     <button
                       type="button"
                       onClick={() => setShowCreateModal(false)}
-                      className="flex-1 px-6 py-4 border-2 border-gray-200 text-gray-700 font-semibold rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
+                      className="flex-1 px-6 py-4 border-2 border-gray-200 text-gray-700 font-semibold rounded-md hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
                       disabled={createMutation.isLoading}
                     >
                       Cancel
@@ -412,7 +406,7 @@ const WorkspacesPage = () => {
                     <button
                       type="submit"
                       disabled={createMutation.isLoading || !newWorkspace.name.trim()}
-                      className="flex-1 px-6 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 text-white font-bold rounded-2xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                      className="flex-1 px-6 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 text-white font-bold rounded-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                     >
                       {createMutation.isLoading ? (
                         <div className="flex items-center justify-center space-x-2">

@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import { 
-  Home, 
-  FolderOpen, 
-  Video, 
-  Settings, 
-  LogOut, 
-  Menu, 
+import {
+  Home,
+  FolderOpen,
+  Video,
+  Settings,
+  LogOut,
+  Menu,
   X,
   User,
   Users,
@@ -19,12 +19,20 @@ import {
   Clock,
   ArrowRight,
   Play,
-  BookOpen
+  BookOpen,
+  Bot,
+  MessageSquare,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { authService } from '../../services/auth'
 import { searchService } from '../../services/search'
 import { toast } from 'sonner'
+import AIAssistant from '../AIAssistant'
+import FeedbackModal from '../FeedbackModal'
+import { useGlobalAI } from '../../hooks/useGlobalAI'
+import { useWebSocket } from '../../hooks/useWebSocket'
 
 interface NavigationItem {
   name: string
@@ -39,6 +47,7 @@ const navigation: NavigationItem[] = [
   { name: 'Video Templates', href: '/templates', icon: Video, gradient: 'from-pink-500 to-rose-500' },
   { name: 'Team', href: '/workspaces', icon: Users, gradient: 'from-purple-500 to-pink-500' },
   { name: 'Analytics', href: '/analytics', icon: TrendingUp, gradient: 'from-indigo-500 to-purple-500' },
+  { name: 'Feedback', href: '/feedback', icon: MessageSquare, gradient: 'from-orange-500 to-red-500' },
   { name: 'Tutorials', href: '/tutorials', icon: Play, gradient: 'from-red-500 to-pink-500' },
   { name: 'Help Center', href: '/help', icon: BookOpen, gradient: 'from-orange-500 to-red-500' },
   { name: 'Settings', href: '/settings', icon: Settings, gradient: 'from-gray-500 to-gray-600' },
@@ -46,20 +55,43 @@ const navigation: NavigationItem[] = [
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showSearchResults, setShowSearchResults] = useState(false)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false)
   const searchRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
   const navigate = useNavigate()
   const { user, clearAuth } = useAuthStore()
 
+  // Global AI Assistant
+  const { isAIOpen, openAI, closeAI, currentContext } = useGlobalAI()
+
+  // WebSocket for real-time feedback notifications
+  const { isConnected, newFeedback, clearNewFeedback } = useWebSocket()
+
+  // Handle new feedback notifications
+  useEffect(() => {
+    if (newFeedback) {
+      toast.success(`New ${newFeedback.type} feedback received!`, {
+        description: `From ${newFeedback.userName}: ${newFeedback.message.substring(0, 100)}${newFeedback.message.length > 100 ? '...' : ''}`,
+        duration: 5000,
+        action: {
+          label: 'View',
+          onClick: () => navigate('/feedback')
+        }
+      })
+      clearNewFeedback()
+    }
+  }, [newFeedback, clearNewFeedback, navigate])
+
   // Search functionality
   const { data: searchResults, isLoading: isSearching } = useQuery(
     ['search', searchQuery],
-    () => searchService.globalSearch({ 
-      query: searchQuery, 
-      limit: 15 
+    () => searchService.globalSearch({
+      query: searchQuery,
+      limit: 15
     }),
     {
       enabled: searchQuery.length >= 2,
@@ -98,7 +130,7 @@ const DashboardLayout = () => {
     const newRecentSearches = [query, ...recentSearches.filter(s => s !== query)].slice(0, 5)
     setRecentSearches(newRecentSearches)
     localStorage.setItem('recentSearches', JSON.stringify(newRecentSearches))
-    
+
     // Navigate to the selected item
     if (type === 'project') {
       navigate(`/projects/${id}`)
@@ -107,7 +139,7 @@ const DashboardLayout = () => {
     } else if (type === 'video') {
       navigate(`/videos/${id}`)
     }
-    
+
     setShowSearchResults(false)
     setSearchQuery('')
   }
@@ -134,16 +166,14 @@ const DashboardLayout = () => {
     <div className="h-screen flex overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
       {/* Mobile sidebar */}
       <div className={`fixed inset-0 flex z-40 md:hidden ${sidebarOpen ? '' : 'pointer-events-none'}`}>
-        <div 
-          className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity ease-linear duration-300 ${
-            sidebarOpen ? 'opacity-100' : 'opacity-0'
-          }`}
+        <div
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity ease-linear duration-300 ${sidebarOpen ? 'opacity-100' : 'opacity-0'
+            }`}
           onClick={() => setSidebarOpen(false)}
         />
-        
-        <div className={`relative flex-1 flex flex-col max-w-xs w-full bg-white/90 backdrop-blur-xl border-r border-gray-200/50 shadow-2xl transition ease-in-out duration-300 transform ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}>
+
+        <div className={`relative flex-1 flex flex-col max-w-xs w-full bg-white/90 backdrop-blur-xl border-r border-gray-200/50 shadow-2xl transition ease-in-out duration-300 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}>
           <div className="absolute top-0 right-0 -mr-12 pt-2">
             <button
               className="ml-1 flex items-center justify-center h-10 w-10 rounded-2xl bg-white/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white shadow-lg hover:scale-110 transition-transform duration-300"
@@ -152,15 +182,25 @@ const DashboardLayout = () => {
               <X className="h-6 w-6 text-white" />
             </button>
           </div>
-          
-          <SidebarContent navigation={navigation} currentPath={location.pathname} />
+
+          <SidebarContent
+            navigation={navigation}
+            currentPath={location.pathname}
+            collapsed={false}
+            onToggleCollapse={() => { }}
+          />
         </div>
       </div>
 
       {/* Desktop sidebar */}
       <div className="hidden md:flex md:flex-shrink-0">
-        <div className="flex flex-col w-64">
-          <SidebarContent navigation={navigation} currentPath={location.pathname} />
+        <div className={`flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-16' : 'w-64'}`}>
+          <SidebarContent
+            navigation={navigation}
+            currentPath={location.pathname}
+            collapsed={sidebarCollapsed}
+            onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+          />
         </div>
       </div>
 
@@ -174,18 +214,18 @@ const DashboardLayout = () => {
           >
             <Menu className="h-5 w-5" />
           </button>
-          
+
           <div className="flex-1 px-6 flex justify-between items-center">
             {/* Left side - New Video button and Search */}
             <div className="flex items-center space-x-6">
-              <button 
+              <button
                 onClick={() => navigate('/projects')}
                 className="inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-sm"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 New Video
               </button>
-              
+
               <div className="relative hidden sm:block" ref={searchRef}>
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
@@ -196,7 +236,7 @@ const DashboardLayout = () => {
                   onChange={(e) => handleSearchChange(e.target.value)}
                   onFocus={() => setShowSearchResults(searchQuery.length > 0 || recentSearches.length > 0)}
                 />
-                
+
                 {/* Search Results Dropdown */}
                 {showSearchResults && (
                   <div className="absolute top-full left-0 right-0 mt-2 bg-white/90 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-2xl z-50 max-h-96 overflow-y-auto">
@@ -328,33 +368,42 @@ const DashboardLayout = () => {
                 )}
               </div>
             </div>
-            
+
             {/* Right side - User info and actions */}
             <div className="flex items-center space-x-3">
               {/* Trial notification */}
               <div className="hidden xl:flex items-center space-x-2 bg-gradient-to-r from-pink-50 to-rose-50 border border-pink-200/50 rounded-xl px-3 py-2 shadow-lg backdrop-blur-sm">
                 <span className="text-xs font-medium text-pink-800 whitespace-nowrap">Trial expires in 6 days</span>
-                <button 
+                <button
                   onClick={() => toast.info('Upgrade plans coming soon!')}
                   className="text-xs bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white px-2.5 py-1 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg whitespace-nowrap"
                 >
                   Upgrade
                 </button>
               </div>
-              
+
               {/* Action buttons */}
               <div className="flex items-center space-x-1">
+                {/* AI Assistant */}
+                <button
+                  onClick={openAI}
+                  className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50/60 hover:backdrop-blur-sm rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                  title="AI Assistant (Ctrl+K)"
+                >
+                  <Bot className="w-4 h-4" />
+                </button>
+
                 {/* Notifications */}
-                <button 
+                <button
                   onClick={() => toast.info('Notifications feature coming soon!')}
                   className="p-2 text-gray-400 hover:text-gray-600 hover:bg-white/60 hover:backdrop-blur-sm rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-lg"
                   title="Notifications"
                 >
                   <Bell className="w-4 h-4" />
                 </button>
-                
+
                 {/* Help */}
-                <button 
+                <button
                   onClick={() => navigate('/help')}
                   className="p-2 text-gray-400 hover:text-gray-600 hover:bg-white/60 hover:backdrop-blur-sm rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-lg"
                   title="Help & Support"
@@ -362,7 +411,7 @@ const DashboardLayout = () => {
                   <HelpCircle className="w-4 h-4" />
                 </button>
               </div>
-              
+
               {/* User menu */}
               <div className="flex items-center space-x-2 bg-white/60 backdrop-blur-sm rounded-xl px-2.5 py-2 shadow-lg border border-gray-200/50">
                 <div className="flex items-center space-x-2">
@@ -375,7 +424,7 @@ const DashboardLayout = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <button
                   onClick={handleLogout}
                   className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-red-50/50 rounded-lg transition-all duration-300 hover:scale-110"
@@ -393,36 +442,108 @@ const DashboardLayout = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Global Floating Action Buttons - Visible on ALL pages */}
+      <div className="fixed bottom-6 right-6 flex flex-col space-y-4 z-50">
+        {/* AI Assistant Button */}
+        <button
+          onClick={openAI}
+          className="w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 flex items-center justify-center group relative"
+          title="AI Assistant (Ctrl+K)"
+        >
+          <Bot className="w-6 h-6 group-hover:animate-pulse" />
+
+          {/* Keyboard shortcut hint */}
+          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Press Ctrl+K
+          </div>
+        </button>
+
+        {/* Feedback Button */}
+        <button
+          onClick={() => setIsFeedbackModalOpen(true)}
+          className="w-14 h-14 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-full shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 flex items-center justify-center group relative"
+          title="Send Feedback"
+        >
+          <MessageSquare className="w-6 h-6 group-hover:animate-bounce" />
+
+          {/* WebSocket Connection Indicator */}
+          <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full ${isConnected ? 'bg-green-400' : 'bg-gray-400'
+            } animate-pulse`} />
+
+          {/* Feedback hint */}
+          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Share Feedback
+          </div>
+        </button>
+      </div>
+
+      {/* Global AI Assistant */}
+      <AIAssistant
+        isOpen={isAIOpen}
+        onClose={closeAI}
+        context={currentContext}
+      />
+
+      {/* Global Feedback Modal */}
+      <FeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onClose={() => setIsFeedbackModalOpen(false)}
+      />
     </div>
   )
 }
 
-const SidebarContent = ({ 
-  navigation, 
-  currentPath 
-}: { 
+const SidebarContent = ({
+  navigation,
+  currentPath,
+  collapsed = false,
+  onToggleCollapse
+}: {
   navigation: NavigationItem[]
-  currentPath: string 
+  currentPath: string
+  collapsed?: boolean
+  onToggleCollapse?: () => void
 }) => {
   return (
     <div className="flex flex-col h-full bg-gradient-to-br from-gray-50 via-white to-gray-100 backdrop-blur-xl border-r border-gray-200/50 shadow-xl relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-200/20 to-pink-200/20 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
       <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-pink-200/20 to-red-200/20 rounded-full blur-2xl translate-y-12 -translate-x-12"></div>
-      
+
       {/* Logo */}
       <div className="flex items-center h-16 flex-shrink-0 px-4 border-b border-gray-200/50 relative z-10">
-        <div className="flex items-center space-x-3">
+        <div className={`flex items-center ${collapsed ? 'justify-center w-full' : 'space-x-3'}`}>
           <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-xl border border-red-300/30 rotate-3 hover:rotate-0 transition-transform duration-300">
             <span className="text-white font-black text-lg">C</span>
           </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-xl font-black bg-gradient-to-r from-gray-900 via-red-600 to-pink-600 bg-clip-text text-transparent">Clueso</span>
-            <div className="px-2 py-1 bg-gradient-to-r from-red-100 to-pink-100 text-red-700 text-xs font-bold rounded-full shadow-sm">
-              +
+          {!collapsed && (
+            <div className="flex items-center space-x-2">
+              <span className="text-xl font-black bg-gradient-to-r from-gray-900 via-red-600 to-pink-600 bg-clip-text text-transparent">Clueso</span>
+              <div className="px-2 py-1 bg-gradient-to-r from-red-100 to-pink-100 text-red-700 text-xs font-bold rounded-full shadow-sm">
+                +
+              </div>
             </div>
-          </div>
+          )}
         </div>
+
+        {/* Collapse Toggle Button */}
+        {onToggleCollapse && (
+          <button
+            onClick={onToggleCollapse}
+            className={`${collapsed
+              ? 'absolute -right-3 top-1/2 -translate-y-1/2 bg-white border border-gray-200 shadow-lg rounded-full'
+              : 'ml-auto'
+              } p-1.5 text-gray-400 hover:text-gray-600 hover:bg-red-50 rounded-lg transition-all duration-300 hover:scale-110 z-20`}
+            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {collapsed ? (
+              <ChevronRight className="w-4 h-4" />
+            ) : (
+              <ChevronLeft className="w-4 h-4" />
+            )}
+          </button>
+        )}
       </div>
 
       {/* Navigation */}
@@ -434,47 +555,64 @@ const SidebarContent = ({
               <Link
                 key={item.name}
                 to={item.href}
-                className={`group relative flex items-center px-4 py-3 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg ${
-                  isActive
-                    ? 'bg-white/80 backdrop-blur-sm text-red-700 shadow-xl border border-red-200/50'
-                    : 'text-gray-700 hover:bg-white/60 hover:backdrop-blur-sm hover:text-gray-900 hover:shadow-lg'
-                }`}
+                className={`group relative flex items-center ${collapsed ? 'px-2 justify-center' : 'px-4'} py-3 text-sm font-semibold rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg ${isActive
+                  ? 'bg-white/80 backdrop-blur-sm text-red-700 shadow-xl border border-red-200/50'
+                  : 'text-gray-700 hover:bg-white/60 hover:backdrop-blur-sm hover:text-gray-900 hover:shadow-lg'
+                  }`}
+                title={collapsed ? item.name : undefined}
               >
                 {isActive && (
                   <div className="absolute inset-0 bg-gradient-to-r from-red-50/50 to-pink-50/50 rounded-2xl"></div>
                 )}
-                <div className="relative z-10 flex items-center w-full">
-                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center mr-3 transition-all duration-300 ${
-                    isActive 
-                      ? 'bg-gradient-to-br from-red-200 to-pink-200 shadow-lg' 
-                      : 'bg-gray-100 group-hover:bg-gradient-to-br group-hover:from-red-100 group-hover:to-pink-100'
-                  }`}>
+                <div className={`relative z-10 flex items-center ${collapsed ? 'justify-center' : 'w-full'}`}>
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${collapsed ? '' : 'mr-3'} transition-all duration-300 ${isActive
+                    ? 'bg-gradient-to-br from-red-200 to-pink-200 shadow-lg'
+                    : 'bg-gray-100 group-hover:bg-gradient-to-br group-hover:from-red-100 group-hover:to-pink-100'
+                    }`}>
                     <item.icon
-                      className={`h-4 w-4 transition-colors ${
-                        isActive ? 'text-red-600' : 'text-gray-500 group-hover:text-red-500'
-                      }`}
+                      className={`h-4 w-4 transition-colors ${isActive ? 'text-red-600' : 'text-gray-500 group-hover:text-red-500'
+                        }`}
                     />
                   </div>
-                  <span className="flex-1">{item.name}</span>
-                  {isActive && (
-                    <div className="w-2 h-2 bg-gradient-to-br from-red-400 to-pink-400 rounded-full shadow-sm"></div>
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1">{item.name}</span>
+                      {isActive && (
+                        <div className="w-2 h-2 bg-gradient-to-br from-red-400 to-pink-400 rounded-full shadow-sm"></div>
+                      )}
+                    </>
                   )}
                 </div>
+
+                {/* Tooltip for collapsed state */}
+                {collapsed && (
+                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                    {item.name}
+                  </div>
+                )}
               </Link>
             )
           })}
         </nav>
-        
+
         {/* Bottom section */}
         <div className="p-3 border-t border-gray-200/50 relative z-10">
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-3 shadow-lg border border-gray-200/50">
-            <div className="flex items-center space-x-3 text-xs">
-              <div className="w-3 h-3 bg-gradient-to-br from-emerald-400 to-green-400 rounded-full shadow-sm animate-pulse"></div>
-              <span className="font-medium text-gray-700">All systems operational</span>
-            </div>
-            <div className="mt-2 text-xs text-gray-500">
-              <span className="font-semibold text-gray-700">v2.1.0</span> • Last updated 2 min ago
-            </div>
+          <div className={`bg-white/60 backdrop-blur-sm rounded-2xl ${collapsed ? 'p-2' : 'p-3'} shadow-lg border border-gray-200/50`}>
+            {collapsed ? (
+              <div className="flex justify-center">
+                <div className="w-3 h-3 bg-gradient-to-br from-emerald-400 to-green-400 rounded-full shadow-sm animate-pulse"></div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center space-x-3 text-xs">
+                  <div className="w-3 h-3 bg-gradient-to-br from-emerald-400 to-green-400 rounded-full shadow-sm animate-pulse"></div>
+                  <span className="font-medium text-gray-700">All systems operational</span>
+                </div>
+                <div className="mt-2 text-xs text-gray-500">
+                  <span className="font-semibold text-gray-700">v2.1.0</span> • Last updated 2 min ago
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

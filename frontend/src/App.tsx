@@ -15,6 +15,7 @@ import AnalyticsPage from './pages/AnalyticsPage'
 import WorkspacesPage from './pages/WorkspacesPage'
 import TutorialsPage from './pages/TutorialsPage'
 import HelpCenterPage from './pages/HelpCenterPage'
+import FeedbackDashboard from './pages/FeedbackDashboard'
 
 // Layouts
 import DashboardLayout from './components/layouts/DashboardLayout'
@@ -83,6 +84,8 @@ function App() {
         <Route path="/tutorials" element={<TutorialsPage />} />
         <Route path="/help" element={<HelpCenterPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/feedback" element={<FeedbackDashboard />} />
+        {/* Admin route - in production, add admin authentication */}
       </Route>
 
       {/* 404 */}

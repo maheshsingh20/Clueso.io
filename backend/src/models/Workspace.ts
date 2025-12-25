@@ -54,8 +54,7 @@ const workspaceSchema = new Schema<WorkspaceDocument>({
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-    index: true
+    required: true
   },
   members: [workspaceMemberSchema],
   projects: [{
